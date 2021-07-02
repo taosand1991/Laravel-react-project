@@ -1,0 +1,15 @@
+export default {
+    loginUrl: "http://127.0.0.1:8000/api/login",
+    createUser: "http://127.0.0.1:8000/api/user/create",
+    getPosts: "http://127.0.0.1:8000/api/posts",
+    getPostId: "http://127.0.0.1:8000/api/post/",
+    forgotPassword: "http://127.0.0.1:8000/api/password/",
+    resetPassword: "http://127.0.0.1:8000/api/password/reset",
+    createPost: "http://127.0.0.1:8000/api/post/create",
+    changePassword: "http://127.0.0.1:8000/api/user/change",
+    getUser: "http://127.0.0.1:8000/api/user/current",
+    deletePost: "http://127.0.0.1:8000/api/post/delete",
+    imageLink: "http://127.0.0.1:8000/storage/",
+    likePost: "http://127.0.0.1:8000/api/post/like",
+    commentPost: "http://127.0.0.1:8000/api/post/comment",
+};
