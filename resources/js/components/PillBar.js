@@ -6,7 +6,7 @@ function PillBar({ setPill, page }) {
         setPill(page);
     };
     return (
-        <div className="text-center container-fluid p-3 ">
+        <div className="text-center text-sm-right container-fluid p-3 w-auto ">
             <ul className="nav nav-tabs">
                 <li className="nav-item">
                     <a

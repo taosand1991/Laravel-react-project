@@ -83,7 +83,10 @@ function PostLists({ posts, page }) {
                                                     by {post.user.name}
                                                 </small>
                                                 <p className="card-text">
-                                                    {post.body}
+                                                    {post.body.substring(
+                                                        0,
+                                                        150
+                                                    ) + "..."}
                                                 </p>
                                                 <hr></hr>
                                                 <div className="mt-0 social">
@@ -147,17 +150,22 @@ function PostLists({ posts, page }) {
                                                     <hr />
                                                 )}
 
-                                                <div className="mt-2 mb-2">
-                                                    <i
-                                                        onClick={() =>
-                                                            deletePost(post.id)
-                                                        }
-                                                        style={{
-                                                            cursor: "pointer",
-                                                        }}
-                                                        className="bi-trash-fill fs-4 text-danger"
-                                                    ></i>
-                                                </div>
+                                                {post.user_id === user.id && (
+                                                    <div className="mt-2 mb-2">
+                                                        <i
+                                                            onClick={() =>
+                                                                deletePost(
+                                                                    post.id
+                                                                )
+                                                            }
+                                                            style={{
+                                                                cursor:
+                                                                    "pointer",
+                                                            }}
+                                                            className="bi-trash-fill fs-4 text-danger"
+                                                        ></i>
+                                                    </div>
+                                                )}
                                                 <p className="card-text">
                                                     <small className="text-muted">
                                                         posted{" "}

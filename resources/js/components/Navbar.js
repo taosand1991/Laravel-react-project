@@ -22,6 +22,12 @@ import authContext from "../authentication/auth";
 
 function Navbar(props) {
     const { user } = React.useContext(authContext);
+    const [open, setOpen] = useState(false);
+
+    const setOpenBar = () => {
+        setOpen(!open);
+    };
+    console.log(open);
     if (!user.name) return <div className="text-center">Loading....</div>;
     return (
         <Fragment>
@@ -60,6 +66,23 @@ function Navbar(props) {
                         <MDBNavbarNav right className="ms-auto">
                             <MDBNavbarItem>
                                 Welcome ({user.name})!
+                            </MDBNavbarItem>
+                        </MDBNavbarNav>
+                        <MDBNavbarNav right className="ms-auto">
+                            <MDBNavbarItem className="second-list">
+                                <MDBNavbarLink>
+                                    <MDBIcon
+                                        onClick={setOpenBar}
+                                        className="position-relative"
+                                        icon="bell"
+                                        fas
+                                        size="2x"
+                                    >
+                                        <span className="position-absolute top-2 start-100 translate-middle p-1 badge rounded-circle bg-danger">
+                                            {user.notifications.length}
+                                        </span>
+                                    </MDBIcon>
+                                </MDBNavbarLink>
                             </MDBNavbarItem>
                         </MDBNavbarNav>
                     </MDBCollapse>

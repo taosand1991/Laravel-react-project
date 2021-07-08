@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 // Route::view('/', 'welcome');
 Route::get('/{react}', function () {
     return view('welcome');
-})->where('react', '.*');
+})->where('react', '[\/\w\.-]*');
 
 Route::get('/reset', function () {
     return response()->json(['message' => 'This is the password page']);

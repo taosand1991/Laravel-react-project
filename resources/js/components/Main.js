@@ -17,7 +17,7 @@ class Main extends Component {
             count: 0,
             comment: "",
             showComment: 0,
-            post: {},
+            post: null,
         };
     }
 
@@ -172,6 +172,7 @@ class Main extends Component {
             handleCommentChange,
             handleShowComments,
         } = this;
+        console.log(this.state.user);
         return (
             <Fragment>
                 <authContext.Provider

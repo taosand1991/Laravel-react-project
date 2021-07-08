@@ -5,6 +5,7 @@ import axios from "axios";
 import urls from "../utils/Urls";
 import * as joi from "joi-browser";
 import Alert from "../utils/Alert";
+import { Link } from "react-router-dom";
 
 export default function Login({ history }) {
     const { MDBInput, MDBBtn, MDBValidation, MDBSpinner } = mdb;
@@ -96,8 +97,6 @@ export default function Login({ history }) {
             errors["login"] = error.response.data["message"];
             setState({ ...state, loading: false, errors });
             console.log(state.errors);
-            let alert = document.getElementById("myAlert");
-            alert.focus();
         }
     };
     const {
@@ -192,6 +191,15 @@ export default function Login({ history }) {
                                 )}
                                 Log in
                             </MDBBtn>
+                        </div>
+                        <div className="mt-2 text-center">
+                            <p>
+                                Are you new ?{" "}
+                                <Link to={"/register"}>create an account</Link>
+                            </p>
+                            <Link className="mt-2" to="/forgot">
+                                forgot password?
+                            </Link>
                         </div>
                     </MDBValidation>
                 </div>

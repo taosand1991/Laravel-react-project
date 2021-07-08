@@ -17,7 +17,7 @@ function CreatePost({ page }) {
 
     if (page === "create")
         return (
-            <div className="container p-5 w-50 border border-2 ">
+            <div className="container p-5 w-50 w-auto border border-2 smaller">
                 <form onSubmit={handleSubmitPost}>
                     <div className="form-group mb-4">
                         <label className="form-label" htmlFor="form4Example1">

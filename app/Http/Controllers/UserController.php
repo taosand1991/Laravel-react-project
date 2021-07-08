@@ -82,7 +82,7 @@ class UserController extends Controller
     }
     public function getUser()
     {
-        $user = Auth::user();
+        $user = User::where('id', Auth::id())->with(['notifications'])->first();
         return response()->json(['user' => $user], 200);
     }
 }

@@ -50,7 +50,12 @@ class User extends Authenticatable
 
     public function comments()
     {
-        $this->hasMany(Comments::class, 'user_id');
+        return $this->hasMany(Comments::class, 'user_id');
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notifications::class, 'user_id');
     }
 
     /**

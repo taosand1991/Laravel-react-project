@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -11,7 +12,7 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::with(['likes', 'user', 'comments'])->get();
+        $posts = Post::with(['likes', 'user', 'comments.user',])->get();
         return response()->json($posts, 200);
     }
 
@@ -83,6 +84,14 @@ class PostController extends Controller
             'image' => $request->file('image')->storeAs('post_images', $photo, 'public'),
             'user_id' => Auth::id()
         ]);
+        foreach (User::all() as $user) {
+            if ($user->id == Auth::id()) return null;
+            $user->notifications()->create([
+                'subject' => Auth::user()->name . ' created a post',
+                'body' => Auth::user()->name . ' created a post with the title' . $post->title,
+                'is_read' => false,
+            ]);
+        }
         return response()->json(['message' => 'Post has been created', 'post' => $post], 201);
     }
 
