@@ -19,6 +19,7 @@ import {
     MDBCollapse,
 } from "mdb-react-ui-kit";
 import authContext from "../authentication/auth";
+import { Link } from "react-router-dom";
 
 function Navbar(props) {
     const { user } = React.useContext(authContext);
@@ -27,7 +28,6 @@ function Navbar(props) {
     const setOpenBar = () => {
         setOpen(!open);
     };
-    console.log(open);
     if (!user.name) return <div className="text-center">Loading....</div>;
     return (
         <Fragment>
@@ -49,7 +49,7 @@ function Navbar(props) {
                                 <MDBNavbarLink
                                     active
                                     aria-current="page"
-                                    href="#"
+                                    to="/"
                                 >
                                     <i className="bi bi-house-door-fill me-2" />
                                     Home
@@ -57,10 +57,10 @@ function Navbar(props) {
                             </MDBNavbarItem>
 
                             <MDBNavbarItem>
-                                <MDBNavbarLink href="/logout">
+                                <Link className="nav-link" to="/logout">
                                     <i className="bi bi-key me-2" />
                                     Logout
-                                </MDBNavbarLink>
+                                </Link>
                             </MDBNavbarItem>
                         </MDBNavbarNav>
                         <MDBNavbarNav right className="ms-auto">

@@ -1,7 +1,8 @@
 import React from "react";
 import authContext from "../authentication/auth";
+import { withRouter } from "react-router-dom";
 
-function CreatePost({ page }) {
+function CreatePost({ page, changePill }) {
     const {
         postCredentials,
         handlePostChanges,

@@ -58,6 +58,21 @@ class User extends Authenticatable
         return $this->hasMany(Notifications::class, 'user_id');
     }
 
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'user_id');
+    }
+
+    public function first_user()
+    {
+        return $this->belongsTo(Thread::class, 'id', 'first_user');
+    }
+
+    public function second_user()
+    {
+        return $this->belongsTo(Thread::class, 'id', 'second_user');
+    }
+
     /**
      * The attributes that should be cast to native types.
      *

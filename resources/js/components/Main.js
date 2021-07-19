@@ -11,6 +11,7 @@ class Main extends Component {
         super(props);
         this.state = {
             user: {},
+            users: [],
             posts: [],
             postCredentials: { title: "", body: "" },
             image: "",
@@ -18,8 +19,17 @@ class Main extends Component {
             comment: "",
             showComment: 0,
             post: null,
+            page: "article",
         };
     }
+
+    setPill = (page) => {
+        this.setState({ ...this.state, page });
+    };
+
+    changePill = () => {
+        this.setState({ ...this.state, page: "article" });
+    };
 
     getUser = async () => {
         try {
@@ -33,19 +43,58 @@ class Main extends Component {
     getPosts = async () => {
         try {
             const response = await axios.get(urls.getPosts);
-            console.log(response.data);
             this.setState({ ...this.state, posts: response.data });
         } catch (e) {
             console.log(e.response.data);
         }
     };
 
+    getUsers = async () => {
+        try {
+            const response = await axios.get(urls.getUsers);
+            console.log(response.data);
+            this.setState({ ...this.state, users: response.data });
+        } catch (e) {
+            console.log(e.response.data);
+        }
+    };
+
+    logUserOut = setTimeout(async () => {
+        if (token.userToken()) {
+            await axios.post(urls.userLogout);
+            localStorage.removeItem("token");
+            return this.props.history.push("/login");
+        }
+    }, 1000 * 60 * 60);
+
     async componentDidMount() {
         if (token.userToken()) {
             this.getPosts();
+            this.getUsers();
+            window.Echo.private("post-message").listen(
+                "UpdatePostMessage",
+                (e) => {
+                    console.log(e);
+                    this.getUser();
+                    this.getPosts();
+                }
+            );
+            window.Echo.private("online-users").listen("OnlineUser", (e) => {
+                console.log("online");
+                console.log(e), this.getUsers();
+            });
+            window.Echo.private("offline-users").listen("OfflineUser", (e) => {
+                console.log("offline");
+                console.log(e), this.getUsers();
+            });
             return this.getUser();
         }
     }
+
+    componentWillUnmount() {
+        clearTimeout(this.logUserOut);
+    }
+
     handleSubmitPost = async (e) => {
         e.preventDefault();
         const {
@@ -60,7 +109,10 @@ class Main extends Component {
             const { post } = await axios.post(urls.createPost, formData);
             const posts = [...this.state.posts, post];
             this.setState({ ...this.state, posts });
-            window.location.reload();
+            setTimeout(() => {
+                this.props.history.push("/home");
+                this.changePill();
+            }, 1500);
         } catch (error) {
             console.log(e.response.data);
         }
@@ -159,6 +211,8 @@ class Main extends Component {
             showComment,
             comment,
             post,
+            page,
+            users,
         } = this.state;
         const {
             getUser,
@@ -171,8 +225,9 @@ class Main extends Component {
             handleSubmitComment,
             handleCommentChange,
             handleShowComments,
+            setPill,
+            changePill,
         } = this;
-        console.log(this.state.user);
         return (
             <Fragment>
                 <authContext.Provider
@@ -194,6 +249,9 @@ class Main extends Component {
                         image,
                         comment,
                         post,
+                        page,
+                        setPill,
+                        users,
                     }}
                 >
                     <Navigation />

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OnlineUser;
+use App\Events\UpdatePostMessage;
 use App\Models\User;
 
 use Illuminate\Support\Str;
@@ -9,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class UserController extends Controller
 {
@@ -53,9 +56,27 @@ class UserController extends Controller
         $user = User::where('email', $request->input('email'))->first();
         if ($user) {
             $hasher = Hash::check($request->input('password'), $user->password);
-            if ($hasher) return response()->json(['user' => $user], 200);
-            else return response()->json(['message' => 'login attempt failed'], 400);
+            if ($hasher) {
+                $user->login_time = now();
+                $user->save();
+                broadcast(new OnlineUser($user))->toOthers();
+                return response()->json(['user' => $user], 200);
+            } else return response()->json(['message' => 'login attempt failed'], 400);
         } else return response()->json(['message' => 'unauthenticated attempt to login'], 400);
+    }
+
+    public function logOut()
+    {
+        try {
+            $user_id = Auth::id();
+            $user = User::where('id', $user_id)->first();
+            $user->logout_time = now();
+            $user->save();
+            broadcast(new OnlineUser($user))->toOthers();
+            return response()->json(['message' => 'Logout successfully'], 200);
+        } catch (Throwable $e) {
+            return $e;
+        }
     }
 
     public function change(Request $request)

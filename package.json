@@ -29,8 +29,10 @@
         "bootstrap-icons": "^1.5.0",
         "joi": "^17.4.0",
         "joi-browser": "^13.4.0",
+        "laravel-echo": "^1.11.0",
         "mdb-react-ui-kit": "^1.0.0-beta6",
         "moment": "^2.29.1",
+        "pusher-js": "^7.0.3",
         "react-router-dom": "^5.2.0",
         "yup": "^0.32.9"
     },

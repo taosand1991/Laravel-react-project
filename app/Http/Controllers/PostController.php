@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UpdatePostMessage;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -84,8 +85,9 @@ class PostController extends Controller
             'image' => $request->file('image')->storeAs('post_images', $photo, 'public'),
             'user_id' => Auth::id()
         ]);
+        broadcast(new UpdatePostMessage($post))->toOthers();
         foreach (User::all() as $user) {
-            if ($user->id == Auth::id()) return null;
+            if ($user->id == Auth::id()) continue;
             $user->notifications()->create([
                 'subject' => Auth::user()->name . ' created a post',
                 'body' => Auth::user()->name . ' created a post with the title' . $post->title,
