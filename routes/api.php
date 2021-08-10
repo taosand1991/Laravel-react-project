@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/outer', [UserController::class, 'logOut']);
     Route::post('/post/create', [PostController::class, 'create']);
     Route::post('/create/thread', [ThreadController::class, 'create']);
+    Route::get('/list/threads', [ThreadController::class, 'list']);
     Route::post('/create/message/{id}', [ThreadController::class, 'create_message']);
     Route::get('/post/delete/{id}', [PostController::class, 'delete']);
     Route::post('/post/comment', [CommentsController::class, 'create']);

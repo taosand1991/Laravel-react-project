@@ -55,7 +55,7 @@ function PostLists({ posts, page }) {
     };
     if (page === "article")
         return (
-            <div className="container  p-2">
+            <div className="container  p-2 overlay-value">
                 <div className="row g-4">
                     {posts.map((post) => {
                         return (

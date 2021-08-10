@@ -4,14 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Events\UpdatePostMessage;
 use App\Models\Post;
+use App\Mail\WelcomeEmail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $posts = Post::with(['likes', 'user', 'comments.user',])->get();
         return response()->json($posts, 200);

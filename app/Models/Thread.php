@@ -19,4 +19,19 @@ class Thread extends Model
     {
         return $this->hasMany(Message::class, 'thread_id');
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(MessageNotification::class, 'thread_id');
+    }
+
+    public function first_user()
+    {
+        return $this->belongsTo(User::class, 'first_user');
+    }
+
+    public function second_user()
+    {
+        return $this->belongsTo(User::class, 'second_user');
+    }
 }

@@ -5,10 +5,19 @@ namespace App\Http\Controllers;
 use App\Events\PublishMessages;
 use Illuminate\Http\Request;
 use App\Models\Thread;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class ThreadController extends Controller
 {
+    public function list()
+    {
+        $threads = Thread::where('first_user', Auth::id())
+            ->orWhere('second_user', Auth::id())
+            ->orderBy('created_at', 'desc')->with(['messages', 'first_user', 'second_user'])->get();
+        return response()->json($threads, 200);
+    }
+
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -26,6 +35,10 @@ class ThreadController extends Controller
                 $query->where('first_user', $second_user)->where('second_user', $first_user);
             })->with(['messages'])->first();
         if ($old_thread) {
+            foreach ($old_thread->messages as $message) {
+                $message->is_read = true;
+                $message->save();
+            }
             return response()->json(['message' => 'found the thread', $old_thread]);
         }
         $thread = Thread::firstOrCreate([
@@ -53,6 +66,13 @@ class ThreadController extends Controller
             'user_id' => $request->input('user_id'),
             'thread_id' => $request->input('thread_id'),
             'is_read' => $request->input('is_read')
+        ]);
+        $thread_reciever = $thread->first_user == Auth::id() ? $thread->second_user : $thread->first_user;
+        $thread_notification = $thread->notifications()->create([
+            'sender' => Auth::id(),
+            'reciever' => $thread_reciever,
+            'message_id' => $thread_messages->id,
+            'message_body' => Auth::user()->name . ' ' . 'sent you a message'
         ]);
         broadcast(new PublishMessages($thread));
         return response()->json(['message' => 'message created', $thread_messages], 201);

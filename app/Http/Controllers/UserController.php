@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Events\OnlineUser;
-use App\Events\UpdatePostMessage;
+use App\Mail\WelcomeEmail;
 use App\Models\User;
+use App\Models\MessageNotification;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Throwable;
 
@@ -37,7 +39,7 @@ class UserController extends Controller
             'email' => $request->input('email'),
             'password' => $password,
         ]);
-
+        Mail::to($request->email)->send(new WelcomeEmail($user));
         $token = $user->createToken('token', [$request->input('password')])->plainTextToken;
         $user->token = $token;
         $user->save();
@@ -101,9 +103,10 @@ class UserController extends Controller
         }
         return;
     }
-    public function getUser()
+    public function getUser(Request $request)
     {
-        $user = User::where('id', Auth::id())->with(['notifications'])->first();
-        return response()->json(['user' => $user], 200);
+        $user = User::where('id', Auth::id())->with(['notifications', 'messages'])->first();
+        $user_message = MessageNotification::where('reciever', $user->id)->with(['message'])->get();
+        return response()->json(['user' => $user, 'user_message' => $user_message], 200);
     }
 }

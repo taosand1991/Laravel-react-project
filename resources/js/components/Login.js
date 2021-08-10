@@ -5,7 +5,8 @@ import axios from "axios";
 import urls from "../utils/Urls";
 import * as joi from "joi-browser";
 import Alert from "../utils/Alert";
-import { Link } from "react-router-dom";
+import token from "../utils/token";
+import { Link, Redirect } from "react-router-dom";
 
 export default function Login({ history }) {
     const { MDBInput, MDBBtn, MDBValidation, MDBSpinner } = mdb;
@@ -87,8 +88,7 @@ export default function Login({ history }) {
                     loading: false,
                     loginUser: { username: "", password: "" },
                 });
-                // history.push("/home");
-                window.location.href = "/home";
+                window.location.href = "/";
             }, 2000);
             getUser();
         } catch (error) {
@@ -105,6 +105,8 @@ export default function Login({ history }) {
         isFocused,
         loading,
     } = state;
+
+    if (token.userToken()) return <Redirect to="/" />;
     return (
         <div className="main-page">
             <div className="sub-page">

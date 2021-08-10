@@ -65,12 +65,22 @@ class User extends Authenticatable
 
     public function first_user()
     {
-        return $this->belongsTo(Thread::class, 'id', 'first_user');
+        return $this->hasMany(Thread::class, 'id', 'first_user');
     }
 
     public function second_user()
     {
-        return $this->belongsTo(Thread::class, 'id', 'second_user');
+        return $this->hasMany(Thread::class, 'id', 'second_user');
+    }
+
+    public function senders()
+    {
+        return $this->hasMany(MessageNotification::class, 'id', 'sender');
+    }
+
+    public function recievers()
+    {
+        return $this->hasMany(MessageNotification::class, 'id', 'reciever');
     }
 
     /**

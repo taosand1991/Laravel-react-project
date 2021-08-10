@@ -86,7 +86,7 @@ function Signup(props) {
             localStorage.setItem("token", response.data.user["token"]);
             setTimeout(() => {
                 setState({ ...state, loading: false });
-                window.location.href = "/home";
+                window.location.href = "/";
             }, 2000);
         } catch (e) {
             console.log(e.response.data);

@@ -2,20 +2,25 @@ import React, { Fragment, useEffect, useState } from "react";
 import authContext from "../authentication/auth";
 import moment from "moment";
 import Navbar from "./Navbar";
+import NotificationLayout from "./NotificationLayout";
 import PillBar from "./PillBar";
 import PostLists from "./PostLists";
 import CreatePost from "./CreatePost";
 import ChatBox from "./ChatBox";
 import axios from "../utils/Axios";
 import Urls from "../utils/Urls";
+import { MDBBadge } from "mdb-react-ui-kit";
 
 function Home(props) {
     const {
         posts,
         deletePost,
+        userMessage,
         users,
         user,
         post,
+        threads,
+        getThreads,
         page,
         setPill,
         changePill,
@@ -42,6 +47,9 @@ function Home(props) {
             "PublishMessages",
             (e) => {
                 setState({ ...state, thread: e.thread });
+                getThreads();
+                const chatBody = document.querySelector(".chat__box__body");
+                chatBody.scroll(0, chatBody.scrollHeight);
             }
         );
     }, [page, state.thread]);
@@ -69,6 +77,7 @@ function Home(props) {
 
         try {
             const response = await axios.post(Urls.createThread, threadObject);
+            console.log(response);
             setState({ ...state, thread: response.data[0], user: secondUser });
             const chatBox = document.querySelector(".chat-box");
             if (chatBox.classList.contains("zoom-out")) {
@@ -81,10 +90,6 @@ function Home(props) {
             console.log(e.response.data);
         }
     };
-
-    const realUsers = users.filter((otherUser) => {
-        return otherUser.id !== user.id;
-    });
 
     const handleMessageChange = (e) => {
         setState({ ...state, message: e.target.value });
@@ -105,8 +110,8 @@ function Home(props) {
                 );
                 let thread = { ...state.thread };
                 thread.messages.push(response.data[0]);
-                setState({ ...state, message: "", thread: thread });
                 const chatBody = document.querySelector(".chat__box__body");
+                setState({ ...state, message: "", thread: thread });
                 chatBody.scroll(0, chatBody.scrollHeight);
             } catch (e) {
                 console.log(e.response.data);
@@ -114,9 +119,18 @@ function Home(props) {
         }
     };
 
+    const getThreadUsers = (threadUser) => {
+        if (threadUser.first_user.id === user.id) {
+            return threadUser.second_user;
+        } else if (threadUser.second_user.id === user.id) {
+            return threadUser.first_user;
+        }
+    };
+
     return (
         <Fragment>
             <Navbar />
+            <NotificationLayout userMessage={userMessage} />
             <div
                 className="offcanvas offcanvas-start"
                 id="offcanvasExample"
@@ -186,13 +200,29 @@ function Home(props) {
                     </div>
                     <div className="user-box">
                         <ul className="users-list">
-                            {realUsers.map((user) => {
+                            {threads.map((thread) => {
                                 return (
                                     <li
-                                        onClick={() => handleUserClick(user)}
-                                        key={user.id}
+                                        onClick={() =>
+                                            handleUserClick(
+                                                getThreadUsers(thread)
+                                            )
+                                        }
+                                        key={thread.id}
                                     >
-                                        {user.name} {handleTiming(user)}
+                                        {getThreadUsers(thread) &&
+                                            getThreadUsers(thread)["name"]}
+                                        {getThreadUsers(thread) &&
+                                            handleTiming(
+                                                getThreadUsers(thread)
+                                            )}
+                                        <br />
+                                        <span>
+                                            {thread.messages.length > 0 &&
+                                                thread.messages[
+                                                    thread.messages.length - 1
+                                                ].message}
+                                        </span>
                                     </li>
                                 );
                             })}

@@ -13,6 +13,8 @@ class Main extends Component {
             user: {},
             users: [],
             posts: [],
+            threads: [],
+            userMessage: [],
             postCredentials: { title: "", body: "" },
             image: "",
             count: 0,
@@ -34,7 +36,12 @@ class Main extends Component {
     getUser = async () => {
         try {
             const response = await axios.get(urls.getUser);
-            this.setState({ ...this.state, user: response.data.user });
+            console.log(response);
+            this.setState({
+                ...this.state,
+                user: response.data.user,
+                userMessage: response.data.user_message,
+            });
         } catch (e) {
             console.log(e.response.data);
         }
@@ -49,10 +56,18 @@ class Main extends Component {
         }
     };
 
+    getThreads = async () => {
+        try {
+            const response = await axios.get(urls.listThreads);
+            this.setState({ ...this.state, threads: response.data });
+        } catch (e) {
+            console.log(e.response.data);
+        }
+    };
+
     getUsers = async () => {
         try {
             const response = await axios.get(urls.getUsers);
-            console.log(response.data);
             this.setState({ ...this.state, users: response.data });
         } catch (e) {
             console.log(e.response.data);
@@ -71,12 +86,14 @@ class Main extends Component {
         if (token.userToken()) {
             this.getPosts();
             this.getUsers();
+            this.getThreads();
             window.Echo.private("post-message").listen(
                 "UpdatePostMessage",
                 (e) => {
                     console.log(e);
                     this.getUser();
                     this.getPosts();
+                    this.getThreads();
                 }
             );
             window.Echo.private("online-users").listen("OnlineUser", (e) => {
@@ -213,6 +230,8 @@ class Main extends Component {
             post,
             page,
             users,
+            threads,
+            userMessage,
         } = this.state;
         const {
             getUser,
@@ -227,6 +246,7 @@ class Main extends Component {
             handleShowComments,
             setPill,
             changePill,
+            getThreads,
         } = this;
         return (
             <Fragment>
@@ -251,7 +271,10 @@ class Main extends Component {
                         post,
                         page,
                         setPill,
+                        userMessage,
                         users,
+                        threads,
+                        getThreads,
                     }}
                 >
                     <Navigation />

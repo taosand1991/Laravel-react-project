@@ -11,6 +11,7 @@ export default {
     getUsers: "http://127.0.0.1:8000/api/users",
     userLogout: "http://127.0.0.1:8000/api/outer",
     createThread: "http://127.0.0.1:8000/api/create/thread",
+    listThreads: "http://127.0.0.1:8000/api/list/threads",
     createMessage: "http://127.0.0.1:8000/api/create/message",
     deletePost: "http://127.0.0.1:8000/api/post/delete",
     imageLink: "http://127.0.0.1:8000/storage/",
